@@ -338,7 +338,46 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    
+
+    function sortNum(a,b){
+      return a-b;
+    }
+
+    if (typeof iterator === 'string'){
+      var sortValue = function(obj){
+        return obj[iterator];
+      }
+    }
+    else {
+      var sortValue = function(obj){
+        return iterator(obj);
+      }
+    }
+
+    var sortArray = [];
+    for (var i=0; i<collection.length; i++){
+      sortArray.push(sortValue(collection[i]));
+    }
+
+    if (_.some(sortArray, function(element){
+      return typeof element === "number";
+    })){
+      sortArray.sort(sortNum);
+    }
+    else {
+      sortArray.sort();
+    }
+
+    var collectionCopy = collection.slice(0);
+    sortArray = _.map(sortArray, function(value, key, array){
+      for (var i=0; i<collectionCopy.length; i++){
+        if (sortValue(collectionCopy[i])===value){
+          return collectionCopy.splice(i, 1)[0];
+        }
+      }
+    })
+
+    return sortArray;
   };
 
 
