@@ -338,7 +338,10 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    
   };
+
+
 
   // Zip together two or more arrays with elements of the same index
   // going together.
@@ -346,6 +349,24 @@ var _ = { };
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var longestArrayLength = 0;
+    var results = [];
+    
+    for (var i=0; i<arguments.length; i++){
+      if (arguments[i].length > longestArrayLength){
+        longestArrayLength = arguments[i].length;
+      }
+    }
+
+    for (var i=0; i<longestArrayLength; i++){
+      var individualArray = [];
+      for (var j=0; j<arguments.length; j++){
+        individualArray.push(arguments[j][i])
+      }
+      results.push(individualArray);
+    }
+
+    return results;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -353,16 +374,74 @@ var _ = { };
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+
+    function flattenOnce(array){
+      var flattenedArray = [];
+      for (var i=0; i<array.length; i++){
+        if (Array.isArray(array[i])){
+          for (var j=0; j<array[i].length; j++){
+            flattenedArray.push(array[i][j]);
+          }
+        }
+        else {
+          flattenedArray.push(array[i]);
+        }
+      }
+      return flattenedArray;
+    }
+
+    function flatArrayCheck(array){
+      for (var i=0; i<array.length; i++){
+        if (Array.isArray(array[i])){
+          return false;
+        }
+      }
+      return true;
+    }
+
+    if (result){
+      return flattenOnce(nestedArray);
+    }
+    else {
+      while(!flatArrayCheck(nestedArray)){
+        nestedArray = flattenOnce(nestedArray);
+      }
+      return nestedArray;
+    }
+  
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var originalArray = arguments[0];
+    var checkArrays = Array.prototype.slice.call(arguments, 1);
+    var result = [];
+
+    for (var i=0; i<originalArray.length; i++){
+      if (_.every(checkArrays, function(individualArray){
+        return _.contains(individualArray, originalArray[i]);
+      })){
+        result.push(originalArray[i]);
+      }
+    }
+    return result;
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var checkArrays = Array.prototype.slice.call(arguments,1);
+    var result = [];
+
+    for (var i=0; i<array.length; i++){
+      if (_.every(checkArrays, function(individualArray){
+        return !_.contains(individualArray, array[i]);
+      })){
+        result.push(array[i]);
+      }
+    }
+    return result;
   };
 
 
