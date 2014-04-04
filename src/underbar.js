@@ -496,16 +496,15 @@ var _ = { };
   _.throttle = function(func, wait) {
     
     var previousTime = new Date().getTime() - wait;             //milliseconds since 1970/01/01
-    var currentTime;
     var result;
 
     return function(){
-      currentTime = new Date().getTime();
+      var currentTime = new Date().getTime();
       if ((currentTime-previousTime) >= wait){  
         previousTime = currentTime;
         result = func.apply(this, arguments);
-      return result;
       }
+      return result;
     }
   };
 
