@@ -33,6 +33,12 @@ var _ = { };
       return array;
     }
     return n === undefined ? array[array.length-1] : array.slice(Math.max(array.length-n, 0), array.length)
+// =======
+//     if (n === undefined){
+//       return array[array.length-1];
+//     }
+//     return array.slice(Math.max(0,array.length-n));
+// >>>>>>> pair_programming
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -49,6 +55,15 @@ var _ = { };
     else if (typeof(collection) === 'object') {
       for (var x in collection){
         iterator(collection[x], x, collection);
+// =======
+//     if(Array.isArray(collection)) {
+//       for(var i = 0; i < collection.length; i++) {
+//         iterator(collection[i], i, collection);
+//       }
+//     } else {
+//       for (var key in collection) {
+//         iterator(collection[key], key, collection);
+// >>>>>>> pair_programming
       }
     }
   };
@@ -79,6 +94,15 @@ var _ = { };
       }
     });
     return result;
+// =======
+//     var results = [];
+//     _.each(collection, function(value){
+//       if (test(value)) {
+//         results.push(value);
+//       }
+//     });
+//     return results;
+// >>>>>>> pair_programming
   };
 
   // Return all elements of an array that don't pass a truth test.
@@ -102,6 +126,16 @@ var _ = { };
       result.push(x);
     }
     return result;
+// =======
+//     var results = [];
+//     _.each(array, function(value){
+//       obj[JSON.stringify(value)] = "wtf";
+//     });
+//     _.each(obj, function(value, key){
+//       results.push(JSON.parse(key));
+//     });
+//     return results;
+// >>>>>>> pair_programming
   };
 
 
@@ -114,6 +148,14 @@ var _ = { };
       array[key] = iterator(value, key, collection);
     })
     return array;
+// =======
+//     //
+//     var results = [];
+//     _.each(array, function(value){
+//       results.push(iterator(value));
+//     });
+//     return results;
+// >>>>>>> pair_programming
   };
 
   /*
@@ -145,6 +187,15 @@ var _ = { };
         return functionOrKey.apply(value, args);
       }
     })
+// =======
+//     return _.map(collection, function(value) {
+//       if(typeof functionOrKey === "function") {
+//         return functionOrKey.apply(value, args);
+//       } else {
+//         return value[functionOrKey]();
+//       }
+//     });
+// >>>>>>> pair_programming
   };
 
   // Reduces an array or object to a single value by repetitively calling
@@ -160,6 +211,7 @@ var _ = { };
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
+
   _.reduce = function(collection, iterator, accumulator) {
     if (accumulator === undefined){
       accumulator = _.first(collection);
@@ -168,6 +220,19 @@ var _ = { };
       accumulator = iterator(accumulator, value);
     })
     return accumulator;
+// =======
+//     var keys = Object.keys(collection);
+//     if(Array.isArray){
+//       var previousValue = accumulator === undefined ? collection.shift() : accumulator;
+//     } else {
+//       var previousValue = accumulator === undefined ? keys.shift() : accumulator;
+//       delete collection[keys];
+//     }
+//     _.each(collection, function(value) {
+//       previousValue = iterator(previousValue, value);
+//     });
+//     return previousValue;
+// >>>>>>> pair_programming
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -185,12 +250,24 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    var iterator = iterator || _.identity;
+
     // TIP: Try re-using reduce() here.
     return _.reduce(collection, function(allTrue, element){
       if (!allTrue){
         return false;
       }
       return Boolean(iterator ? iterator(element) : element);
+// =======
+//     return _.reduce(collection, function(previousValue, value){
+//       if (previousValue) {
+//         if (iterator(value)) {
+//           return previousValue = true;
+//         }
+//       }
+//       return false;
+
+// >>>>>>> pair_programming
     }, true);
   };
 
@@ -202,6 +279,13 @@ var _ = { };
       return !Boolean(iterator ? iterator(element) : element);
     });
     return !result;
+// =======
+//     var iterator = iterator || _.identity;
+
+//     return !_.every(collection, function(value) {
+//         return !iterator(value);
+//       });
+// >>>>>>> pair_programming
   };
 
 
@@ -230,6 +314,16 @@ var _ = { };
       }
     }
     return obj;
+// =======
+//     var rest = Array.prototype.slice.call(arguments, 1);
+
+//     return _.reduce(rest, function(previousValue, value){
+//       _.each(value, function(value, key){
+//         obj[key] = value;
+//       });
+//       return obj;
+//     }, obj);
+// >>>>>>> pair_programming
   };
 
   // Like extend, but doesn't ever overwrite a key that already
@@ -241,6 +335,16 @@ var _ = { };
       }
     }
     return obj;
+// =======
+//     var rest = Array.prototype.slice.call(arguments, 1);
+
+//     return _.reduce(rest, function(previousValue, value){
+//       _.each(value, function(value, key){
+//         obj[key] = obj[key] === undefined ? value : obj[key];
+//       });
+//       return obj;
+//     }, obj);
+// >>>>>>> pair_programming
   };
 
 
@@ -291,6 +395,21 @@ var _ = { };
       }
       return results[arg];
     }
+// =======
+//     var results = {};
+//     var alreadyCalled = {};
+
+//     return function(){
+//       var serial = JSON.stringify(Array.prototype.slice.apply(arguments));
+
+//       if (!alreadyCalled[serial]){
+//         alreadyCalled[serial] = true;
+//         results[serial] = func.apply(null, arguments);
+//       }
+//       return results[serial];
+
+//     };
+// >>>>>>> pair_programming
 
   };
 
@@ -506,6 +625,39 @@ var _ = { };
       }
       return result;
     }
+// =======
+//   _.throttle = function(func, wait){
+//     // do something to func
+//     var lastTime = 0;
+//     var result;
+
+//     return function() {
+//       if(Date.now() - lastTime >= wait) {
+//         lastTime = Date.now();
+//         result = func.apply(this, arguments);
+//       }
+//       return result;
+//     };
+// >>>>>>> pair_programming
   };
 
 }).call(this);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -165,6 +165,13 @@ describe('uniq', function() {
 
     expect(_.uniq(list, true, iterator)).to.eql([1, 2, 3, 4]);
   });
+
+  it('should handle strings', function() {
+    var iterator = function(value) { return value +1; };
+    var list = [1, '1', 2, 2, '2', 3, 4, 4];
+
+    expect(_.uniq(list, true, iterator)).to.eql([1, 2, 3, 4, '1', '2']);
+  });
 });
 
 describe('map', function() {
